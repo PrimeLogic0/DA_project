@@ -4,7 +4,7 @@ Train a diffusion model on images.
 
 import argparse
 import os
-os.chdir('/share/home/snir5742/torch-env/guided-diffusion-main')
+#os.chdir('/share/home/snir5742/torch-env/guided-diffusion-main')
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 #import guided-difusion-0.0.0 as guided_diffusion
 #import guided_diffusion
