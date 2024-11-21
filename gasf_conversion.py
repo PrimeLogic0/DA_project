@@ -13,7 +13,7 @@ if not os.path.exists(save_dir):
 
 # Parametri
 num_packets = 10  # Numero massimo di pacchetti per campione
-output_size = 10  # Dimensione dell'immagine finale
+output_size = 128  # Dimensione dell'immagine finale
 
 # Caricamento del dataset
 df = pd.read_parquet(data_file)

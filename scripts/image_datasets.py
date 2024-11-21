@@ -1,5 +1,6 @@
 import math
 import random
+import os
 
 from PIL import Image
 import blobfile as bf
@@ -14,69 +15,63 @@ def load_data(
     batch_size,
     image_size,
     class_cond=False,
-    deterministic=False,
     random_crop=False,
     random_flip=True,
 ):
     """
-    For a dataset, create a generator over (images, kwargs) pairs.
+    Carica immagini preprocessate e, se specificato, le classi corrispondenti.
 
-    Each images is an NCHW float tensor, and the kwargs dict contains zero or
-    more keys, each of which map to a batched Tensor of their own.
-    The kwargs dict can be used for class labels, in which case the key is "y"
-    and the values are integer tensors of class labels.
-
-    :param data_dir: a dataset directory.
-    :param batch_size: the batch size of each returned pair.
-    :param image_size: the size to which images are resized.
-    :param class_cond: if True, include a "y" key in returned dicts for class
-                       label. If classes are not available and this is true, an
-                       exception will be raised.
-    :param deterministic: if True, yield results in a deterministic order.
-    :param random_crop: if True, randomly crop the images for augmentation.
-    :param random_flip: if True, randomly flip the images for augmentation.
+    :param data_dir: Directory contenente immagini organizzate per classi.
+    :param batch_size: Dimensione del batch per il DataLoader.
+    :param image_size: Dimensione a cui ridimensionare le immagini.
+    :param class_cond: Se True, include le etichette delle classi.
+    :param random_crop: Se True, applica crop casuali per augmentation.
+    :param random_flip: Se True, applica flip orizzontali casuali per augmentation.
+    :return: Generatore infinito che produce batch di immagini e, opzionalmente, etichette.
     """
-    if not data_dir:
-        raise ValueError("unspecified data directory")
-    all_files = _list_image_files_recursively(data_dir)
-    classes = None
-    if class_cond:
-        # Assume classes are the first part of the filename,
-        # before an underscore.
-        class_names = [bf.basename(path).split("_")[0] for path in all_files]
-        sorted_classes = {x: i for i, x in enumerate(sorted(set(class_names)))}
-        classes = [sorted_classes[x] for x in class_names]
+    all_files, labels = _list_image_files_recursively(data_dir)
+
     dataset = ImageDataset(
         image_size,
         all_files,
-        classes=classes,
+        classes=labels if class_cond else None,
         shard=MPI.COMM_WORLD.Get_rank(),
         num_shards=MPI.COMM_WORLD.Get_size(),
         random_crop=random_crop,
         random_flip=random_flip,
     )
-    if deterministic:
-        loader = DataLoader(
-            dataset, batch_size=batch_size, shuffle=False, num_workers=1, drop_last=True
-        )
-    else:
-        loader = DataLoader(
-            dataset, batch_size=batch_size, shuffle=True, num_workers=1, drop_last=True
-        )
+
+    loader = DataLoader(
+        dataset, batch_size=batch_size, shuffle=True, num_workers=4, drop_last=True
+    )
+
     while True:
         yield from loader
 
 
 def _list_image_files_recursively(data_dir):
-    results = []
-    for entry in sorted(bf.listdir(data_dir)):
-        full_path = bf.join(data_dir, entry)
-        ext = entry.split(".")[-1]
-        if "." in entry and ext.lower() in ["jpg", "jpeg", "png", "gif"]:
-            results.append(full_path)
-        elif bf.isdir(full_path):
-            results.extend(_list_image_files_recursively(full_path))
-    return results
+    """
+    Elenca tutti i file immagine all'interno di una directory, suddivisi per classi.
+    Ogni sottodirectory rappresenta una classe, convertita in un indice numerico.
+    """
+    all_files = []
+    labels = []
+
+    # Mappa per assegnare un indice univoco alle directory
+    label_map = {}
+
+    for label_idx, label in enumerate(sorted(os.listdir(data_dir))):
+        label_dir = os.path.join(data_dir, label)
+        if os.path.isdir(label_dir):  # Considera solo directory
+            # Mappa la directory a un indice univoco
+            label_map[label] = label_idx
+            for file in os.listdir(label_dir):
+                if file.endswith(('.png', '.jpg', '.jpeg')):  # Considera solo immagini
+                    all_files.append(os.path.join(label_dir, file))
+                    labels.append(label_idx)  # Usa l'indice numerico associato alla directory
+
+    return all_files, labels
+
 
 
 class ImageDataset(Dataset):
