@@ -215,7 +215,7 @@ class DNN_model(Module):
 ## ------------------------------------
 
 def main():
-    num_of_vid = 20 # number of classes for classification
+    num_of_vid = 16 # number of classes for classification
     num_of_act_trace = 80 # number of original traces to be used (here first 80 in each class folder will be used)
     max_num_of_synth_traces = 400 # total number of synthesized images for each class
     synth_group_size = 100

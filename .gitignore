@@ -1,3 +1,5 @@
 myenv/*
 .idea/*
 scripts/__pycache__/*
+test_/*
+Output_images_10_minmax/*

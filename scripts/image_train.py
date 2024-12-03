@@ -76,7 +76,7 @@ def main():
 
 def create_argparser():
     defaults = dict(
-        data_dir="Output_images",  # Directory del dataset
+        data_dir="Output_images_10_minmax",  # Directory del dataset
         schedule_sampler="uniform",  # Campionamento uniforme
         lr=4e-4,
         weight_decay=0.0,  # Nessuna penalizzazione dei pesi
@@ -85,7 +85,7 @@ def create_argparser():
         microbatch=-1,  # Disabilitato
         ema_rate="0.999",  # EMA leggermente più reattivo
         log_interval=10,  # Frequenza dei log invariata
-        save_interval=100,  # Salva il modello più frequentemente
+        save_interval=1000,  # Salva il modello ogni 1000
         resume_checkpoint="",  # Default, nessun checkpoint
         use_fp16=False,  # Disabilitato per compatibilità GPU
         fp16_scale_growth=1e-3,  # Non usato con FP16 disabilitato

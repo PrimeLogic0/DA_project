@@ -1,7 +1,7 @@
 import math
 import random
 import os
-
+import csv
 from PIL import Image
 import blobfile as bf
 from mpi4py import MPI
@@ -14,9 +14,9 @@ def load_data(
     data_dir,
     batch_size,
     image_size,
-    class_cond=False,
+    class_cond=True,
     random_crop=False,
-    random_flip=True,
+    random_flip=False,
 ):
     """
     Carica immagini preprocessate e, se specificato, le classi corrispondenti.
@@ -70,6 +70,18 @@ def _list_image_files_recursively(data_dir):
                     all_files.append(os.path.join(label_dir, file))
                     labels.append(label_idx)  # Usa l'indice numerico associato alla directory
 
+    csv_filename = "/home/rodolfo/Desktop/unina/DA/NetDiffus/scripts/128/iterate/df/synth_models/label_map.csv"
+
+    with open(csv_filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+
+        # Scrivi l'intestazione (opzionale)
+        writer.writerow(["label", "index"])
+
+        # Scrivi i dati della mappatura
+        for label, index in label_map.items():
+            writer.writerow([label, index])
+
     return all_files, labels
 
 
@@ -83,7 +95,7 @@ class ImageDataset(Dataset):
         shard=0,
         num_shards=1,
         random_crop=False,
-        random_flip=True,
+        random_flip=False,
     ):
         super().__init__()
         self.resolution = resolution
