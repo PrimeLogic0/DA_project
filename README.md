@@ -51,15 +51,22 @@ Run the command below to convert the extracted features in the csv files to GASF
 
 To start the training process you can run the following command:
 
+per l'addestramento completo:
 ```commandline
- python scripts/image_train.py --data_dir <dataset_path> --image_size 128 --num_channels 128 --num_res_blocks 3 --diffusion_steps 1000 --noise_schedule cosine --learn_sigma True --class_cond True --rescale_learned_sigmas False --rescale_timesteps False --lr 1e-4 --batch_size 4
+python scripts/image_train.py --data_dir ../Output_images_10_minmax --image_size 10 --num_channels 128 --num_res_blocks 3 --diffusion_steps 1000 --noise_schedule cosine --learn_sigma True --class_cond True --rescale_learned_sigmas False --rescale_timesteps False --lr 1e-4 --batch_size 4 
 ```
 
-To generate the data you can run the following command:
-
+per l'addestramento sul training:
 ```commandline
-  python scripts/image_sample.py --model_path <trained_model_path> --image_size 128 --num_channels 128 --num_res_blocks 3 --diffusion_steps 1000 --noise_schedule cosine --learn_sigma True --class_cond True --rescale_learned_sigmas False --rescale_timesteps False
+python scripts/image_train.py --data_dir ../training_10 --image_size 10 --num_channels 128 --num_res_blocks 3 --diffusion_steps 1000 --noise_schedule cosine --learn_sigma True --class_cond True --rescale_learned_sigmas False --rescale_timesteps False --lr 1e-4 --batch_size 4 
 ```
+
+per generare immagini con il modello:
+```commandline
+python scripts/image_sample.py --model_path scripts/128/iterate/df/synth_models/nome_modello..pt --image_size 10 --num_channels 128 --num_res_blocks 3 --diffusion_steps 1000 --noise_schedule cosine --learn_sigma True --class_cond True --rescale_learned_sigmas False --rescale_timesteps False
+```
+
+⚠️ NOTA: per generare immagini con il modello bisogna cambiare nello script sopra il nome del modello e in image_sample.py cambiare in fondo al file num_samples con il numero di immagini che si desidera
 
 You can run the classifier.py to get the classification results.
 

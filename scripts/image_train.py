@@ -85,7 +85,7 @@ def create_argparser():
         microbatch=-1,  # Disabilitato
         ema_rate="0.999",  # EMA leggermente più reattivo
         log_interval=10,  # Frequenza dei log invariata
-        save_interval=1000,  # Salva il modello ogni 1000
+        save_interval=5000,  # Salva il modello ogni 1000
         resume_checkpoint="",  # Default, nessun checkpoint
         use_fp16=False,  # Disabilitato per compatibilità GPU
         fp16_scale_growth=1e-3,  # Non usato con FP16 disabilitato
