@@ -70,7 +70,7 @@ def _list_image_files_recursively(data_dir):
                     all_files.append(os.path.join(label_dir, file))
                     labels.append(label_idx)  # Usa l'indice numerico associato alla directory
 
-    csv_filename = "/scripts/128/iterate/df/synth_models/label_map.csv"
+    csv_filename = "./128/iterate/df/synth_models/label_map.csv"
 
     with open(csv_filename, mode='w', newline='') as file:
         writer = csv.writer(file)
