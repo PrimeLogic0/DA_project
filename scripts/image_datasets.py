@@ -23,22 +23,20 @@ def load_data(
 
     :param data_dir: Directory contenente immagini organizzate per classi.
     :param batch_size: Dimensione del batch per il DataLoader.
-    :param image_size: Dimensione a cui ridimensionare le immagini.
+    :param image_size: Ignorato per npz, mantenuto per compatibilità.
     :param class_cond: Se True, include le etichette delle classi.
-    :param random_crop: Se True, applica crop casuali per augmentation.
-    :param random_flip: Se True, applica flip orizzontali casuali per augmentation.
+    :param random_crop: Ignorato per npz.
+    :param random_flip: Ignorato per npz.
     :return: Generatore infinito che produce batch di immagini e, opzionalmente, etichette.
     """
     all_files, labels = _list_image_files_recursively(data_dir)
 
     dataset = ImageDataset(
-        image_size,
-        all_files,
+        resolution=image_size,  # Ignorato
+        image_paths=all_files,
         classes=labels if class_cond else None,
         shard=MPI.COMM_WORLD.Get_rank(),
         num_shards=MPI.COMM_WORLD.Get_size(),
-        random_crop=random_crop,
-        random_flip=random_flip,
     )
 
     loader = DataLoader(
@@ -51,7 +49,7 @@ def load_data(
 
 def _list_image_files_recursively(data_dir):
     """
-    Elenca tutti i file immagine all'interno di una directory, suddivisi per classi.
+    Elenca tutti i file npz all'interno di una directory, suddivisi per classi.
     Ogni sottodirectory rappresenta una classe, convertita in un indice numerico.
     """
     all_files = []
@@ -66,68 +64,57 @@ def _list_image_files_recursively(data_dir):
             # Mappa la directory a un indice univoco
             label_map[label] = label_idx
             for file in os.listdir(label_dir):
-                if file.endswith(('.png', '.jpg', '.jpeg')):  # Considera solo immagini
+                if file.endswith('.npz'):  # Considera solo file npz
                     all_files.append(os.path.join(label_dir, file))
                     labels.append(label_idx)  # Usa l'indice numerico associato alla directory
 
+    # (Opzionale) Salva la mappatura delle etichette come CSV
     csv_filename = "./128/iterate/df/synth_models/label_map.csv"
-
     with open(csv_filename, mode='w', newline='') as file:
         writer = csv.writer(file)
-
-        # Scrivi l'intestazione (opzionale)
         writer.writerow(["label", "index"])
-
-        # Scrivi i dati della mappatura
         for label, index in label_map.items():
             writer.writerow([label, index])
 
     return all_files, labels
 
 
-
 class ImageDataset(Dataset):
     def __init__(
-        self,
-        resolution,
-        image_paths,
-        classes=None,
-        shard=0,
-        num_shards=1,
-        random_crop=False,
-        random_flip=False,
+            self,
+            resolution,
+            image_paths,
+            classes=None,
+            shard=0,
+            num_shards=1,
+            random_crop=False,
+            random_flip=False,
     ):
         super().__init__()
-        self.resolution = resolution
+        self.resolution = resolution  # Ignorato per file npz
         self.local_images = image_paths[shard:][::num_shards]
         self.local_classes = None if classes is None else classes[shard:][::num_shards]
-        self.random_crop = random_crop
-        self.random_flip = random_flip
 
     def __len__(self):
         return len(self.local_images)
 
     def __getitem__(self, idx):
         path = self.local_images[idx]
-        with bf.BlobFile(path, "rb") as f:
-            pil_image = Image.open(f)
-            pil_image.load()
-        pil_image = pil_image.convert("RGB")
+        with np.load(path) as data:  # Carica il file .npz
+            gasf_image = data['gasf_img']  # Supponiamo che la chiave sia 'gasf_img'
 
-        if self.random_crop:
-            arr = random_crop_arr(pil_image, self.resolution)
-        else:
-            arr = center_crop_arr(pil_image, self.resolution)
+        # Normalizzazione: il GASF è già normalizzato a [-1, 1], quindi può essere usato direttamente.
+        arr = gasf_image.astype(np.float32)
 
-        if self.random_flip and random.random() < 0.5:
-            arr = arr[:, ::-1]
-
-        arr = arr.astype(np.float32) / 127.5 - 1
+        # Eventuali trasformazioni specifiche per augmentation possono essere aggiunte qui
+        # es: aggiungere noise o modificare il range.
 
         out_dict = {}
         if self.local_classes is not None:
             out_dict["y"] = np.array(self.local_classes[idx], dtype=np.int64)
-        return np.transpose(arr, [2, 0, 1]), out_dict
+
+        # Per coerenza con il formato immagine, ritorna array con shape (C, H, W)
+        return np.expand_dims(arr, axis=0), out_dict  # Aggiunge una dimensione per il canale
 
 
 def center_crop_arr(pil_image, image_size):

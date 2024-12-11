@@ -1,33 +1,39 @@
-import os
 import numpy as np
-import matplotlib.pyplot as plt
 
-# Parametri di normalizzazione
-min_global = -1460
-max_global = 1460
+# Valori globali min e max utilizzati per la normalizzazione originale
+min_global = -1460  # Sostituisci con il valore reale
+max_global = 1460   # Sostituisci con il valore reale
 
-# Percorso dell'immagine
-gasf_img_path = "/home/rodolfo/Desktop/unina/DA/NetDiffus/test_/sample_2_2.png"
+def recover_original_data(npz_file, min_global, max_global):
+    """
+    Recupera i dati originali da un'immagine GASF salvata come .npz.
 
-# Verifica se il file esiste
-if not os.path.exists(gasf_img_path):
-    raise FileNotFoundError(f"File non trovato: {gasf_img_path}")
+    Args:
+        npz_file (str): Percorso al file .npz.
+        min_global (float): Valore minimo del range originale.
+        max_global (float): Valore massimo del range originale.
 
-# Carica l'immagine
-gasf_img = plt.imread(gasf_img_path)
+    Returns:
+        np.ndarray: Dati originali denormalizzati.
+    """
+    # Carica l'immagine GASF dal file .npz
+    gasf_img = np.load(npz_file)['gasf_img']
 
-# Se ha 4 canali (RGBA), usa solo il primo canale
-if gasf_img.ndim == 3 and gasf_img.shape[2] == 4:
-    gasf_img = gasf_img[:, :, 0]
+    # Estrai la diagonale della matrice
+    decoded_diagonale = np.diag(gasf_img)
 
+    print("Diagonale:", decoded_diagonale)
 
-# Estrai la diagonale
-diagonale = np.diagonal(gasf_img)
+    # Calcola i valori originali dal GASF
+    valori_calcolati = np.sqrt((decoded_diagonale + 1) / 2)
 
-valori_calcolati = np.cos(np.arccos(diagonale) / 2)
+    # Denormalizza al range originale [-1460, 1460]
+    valori_originali = valori_calcolati * (max_global - min_global) + min_global
 
-# Denormalizza i valori al range originale [-1460, 1460]
-valori_originali = [v * (max_global - min_global) + min_global for v in valori_calcolati]
+    return valori_originali
 
-# Risultati finali
-print("Valori originali:", valori_originali)
+# Esempio di utilizzo
+npz_file = "./test_/sample_2.npz"  # Sostituisci con il percorso corretto
+original_data = recover_original_data(npz_file, min_global, max_global)
+
+print("Dati originali recuperati:", original_data)

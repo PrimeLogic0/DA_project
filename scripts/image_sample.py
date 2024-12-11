@@ -53,7 +53,7 @@ def main():
         )
         sample = sample_fn(
             model,
-            (args.batch_size, 3, args.image_size, args.image_size),
+            (args.batch_size, 1, args.image_size, args.image_size),
             clip_denoised=args.clip_denoised,
             model_kwargs=model_kwargs,
         )
@@ -93,7 +93,7 @@ def main():
 def create_argparser():
     defaults = dict(
         clip_denoised=True,
-        num_samples=20,
+        num_samples=10,
         batch_size=16,
         use_ddim=False,
         model_path="",
