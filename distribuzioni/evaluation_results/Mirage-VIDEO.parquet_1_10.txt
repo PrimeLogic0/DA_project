@@ -1,0 +1,64 @@
+Class DiscoveryVR:
+   Jensen-Shannon Divergence (per feature): [0.05739477 0.00402297]
+   Hellinger Distance (per feature): [0.05739477 0.00402297]
+   Total Variation Distance (per feature): [0.04345682 0.00539676]
+Class Facebook:
+   Jensen-Shannon Divergence (per feature): [0.10553015 0.02327885]
+   Hellinger Distance (per feature): [0.10553015 0.02327885]
+   Total Variation Distance (per feature): [0.09328515 0.03291637]
+Class FulldiveVR:
+   Jensen-Shannon Divergence (per feature): [0.11638356 0.02417503]
+   Hellinger Distance (per feature): [0.11638356 0.02417503]
+   Total Variation Distance (per feature): [0.10224748 0.03248676]
+Class Instagram:
+   Jensen-Shannon Divergence (per feature): [0.12461655 0.01592184]
+   Hellinger Distance (per feature): [0.12461655 0.01592184]
+   Total Variation Distance (per feature): [0.08120239 0.0216524 ]
+Class Messenger:
+   Jensen-Shannon Divergence (per feature): [0.0893558  0.05788252]
+   Hellinger Distance (per feature): [0.0893558  0.05788252]
+   Total Variation Distance (per feature): [0.09841911 0.0816974 ]
+Class Netflix:
+   Jensen-Shannon Divergence (per feature): [0.16730008 0.01644888]
+   Hellinger Distance (per feature): [0.16730008 0.01644888]
+   Total Variation Distance (per feature): [0.14184203 0.02326053]
+Class PrimeVideo:
+   Jensen-Shannon Divergence (per feature): [0.12508875 0.04112345]
+   Hellinger Distance (per feature): [0.12508875 0.04112345]
+   Total Variation Distance (per feature): [0.09447004 0.04967476]
+Class Skype:
+   Jensen-Shannon Divergence (per feature): [0.11326671 0.03621298]
+   Hellinger Distance (per feature): [0.11326671 0.03621298]
+   Total Variation Distance (per feature): [0.12867845 0.05069742]
+Class Snapchat:
+   Jensen-Shannon Divergence (per feature): [0.07766454 0.04014754]
+   Hellinger Distance (per feature): [0.07766454 0.04014754]
+   Total Variation Distance (per feature): [0.07086807 0.05674473]
+Class TikTok:
+   Jensen-Shannon Divergence (per feature): [0.08768653 0.00862527]
+   Hellinger Distance (per feature): [0.08768653 0.00862527]
+   Total Variation Distance (per feature): [0.07257424 0.01219765]
+Class VRRollercoaster:
+   Jensen-Shannon Divergence (per feature): [0.11622343 0.03772314]
+   Hellinger Distance (per feature): [0.11622343 0.03772314]
+   Total Variation Distance (per feature): [0.1236657  0.05185233]
+Class Vimeo:
+   Jensen-Shannon Divergence (per feature): [0.12815285 0.02170675]
+   Hellinger Distance (per feature): [0.12815285 0.02170675]
+   Total Variation Distance (per feature): [0.12470904 0.03063085]
+Class Whatsapp:
+   Jensen-Shannon Divergence (per feature): [0.26978319 0.03956812]
+   Hellinger Distance (per feature): [0.26978319 0.03956812]
+   Total Variation Distance (per feature): [0.36531835 0.05551165]
+Class Within:
+   Jensen-Shannon Divergence (per feature): [0.13191652 0.01689627]
+   Hellinger Distance (per feature): [0.13191652 0.01689627]
+   Total Variation Distance (per feature): [0.134181   0.02229077]
+Class Youtube:
+   Jensen-Shannon Divergence (per feature): [0.21202615 0.04623913]
+   Hellinger Distance (per feature): [0.21202615 0.04623913]
+   Total Variation Distance (per feature): [0.17677657 0.06493709]
+Class Zoom:
+   Jensen-Shannon Divergence (per feature): [0.15704134 0.04139881]
+   Hellinger Distance (per feature): [0.15704134 0.04139881]
+   Total Variation Distance (per feature): [0.19376035 0.05745204]
