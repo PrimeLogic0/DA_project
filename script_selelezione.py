@@ -22,9 +22,10 @@ def select_and_copy_images(source_dirs, dest_dir, images_per_folder=100):
 
         # Ottieni il nome della cartella sorgente
         folder_name = os.path.basename(source_dir.rstrip("/\\"))
+
         # Crea una sottocartella nella directory di destinazione
-        target_subfolder = os.path.join(dest_dir, folder_name)
-        os.makedirs(target_subfolder, exist_ok=True)
+        sub_dest_dir = os.path.join(dest_dir, folder_name)
+        os.makedirs(sub_dest_dir, exist_ok=True)
 
         # Elenca tutte le immagini nella directory sorgente
         images = [f for f in os.listdir(source_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))]
@@ -35,10 +36,10 @@ def select_and_copy_images(source_dirs, dest_dir, images_per_folder=100):
         # Copia le immagini nella sottocartella di destinazione
         for image in selected_images:
             src_path = os.path.join(source_dir, image)
-            dest_path = os.path.join(target_subfolder, image)
+            dest_path = os.path.join(sub_dest_dir, image)
             shutil.copy(src_path, dest_path)
 
-        print(f"Copiate {len(selected_images)} immagini da '{source_dir}' a '{target_subfolder}'.")
+        print(f"Copiate {len(selected_images)} immagini da '{source_dir}' a '{sub_dest_dir}'.")
 
 # Configurazione
 source_directories = [
