@@ -24,11 +24,11 @@ def select_and_copy_images(source_dirs, dest_dir, images_per_folder=100):
         folder_name = os.path.basename(source_dir.rstrip("/\\"))
 
         # Crea una sottocartella nella directory di destinazione
-        sub_dest_dir = os.path.join(dest_dir, folder_name)
+        sub_dest_dir = os.path.join(dest_dir)
         os.makedirs(sub_dest_dir, exist_ok=True)
 
         # Elenca tutte le immagini nella directory sorgente
-        images = [f for f in os.listdir(source_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))]
+        images = [f for f in os.listdir(source_dir) if f.lower().endswith(('npz'))]
 
         # Seleziona un numero specifico di immagini casuali
         selected_images = random.sample(images, min(images_per_folder, len(images)))
@@ -43,25 +43,25 @@ def select_and_copy_images(source_dirs, dest_dir, images_per_folder=100):
 
 # Configurazione
 source_directories = [
-    "./Output_images_10_minmax/DiscoveryVR",
-    "./Output_images_10_minmax/Facebook",
-    "./Output_images_10_minmax/FulldiveVR",
-    "./Output_images_10_minmax/Instagram",
-    "./Output_images_10_minmax/Messenger",
-    "./Output_images_10_minmax/Netflix",
-    "./Output_images_10_minmax/PrimeVideo",
-    "./Output_images_10_minmax/Skype",
-    "./Output_images_10_minmax/Snapchat",
-    "./Output_images_10_minmax/TikTok",
-    "./Output_images_10_minmax/Vimeo",
-    "./Output_images_10_minmax/VRRollercoaster",
-    "./Output_images_10_minmax/Whatsapp",
-    "./Output_images_10_minmax/Within",
-    "./Output_images_10_minmax/Youtube",
-    "./Output_images_10_minmax/Zoom"
+    "./Output_images_npz/DiscoveryVR",
+    "./Output_images_npz/Facebook",
+    "./Output_images_npz/FulldiveVR",
+    "./Output_images_npz/Instagram",
+    "./Output_images_npz/Messenger",
+    "./Output_images_npz/Netflix",
+    "./Output_images_npz/PrimeVideo",
+    "./Output_images_npz/Skype",
+    "./Output_images_npz/Snapchat",
+    "./Output_images_npz/TikTok",
+    "./Output_images_npz/Vimeo",
+    "./Output_images_npz/VRRollercoaster",
+    "./Output_images_npz/Whatsapp",
+    "./Output_images_npz/Within",
+    "./Output_images_npz/Youtube",
+    "./Output_images_npz/Zoom"
 ]  # Sostituisci con i percorsi delle tue directory sorgenti
-destination_directory = "./training_10"  # Sostituisci con il percorso della directory di destinazione
-images_per_directory = 100
+destination_directory = "./testing"  # Sostituisci con il percorso della directory di destinazione
+images_per_directory = 100000
 
 # Esegui la funzione
 select_and_copy_images(source_directories, destination_directory, images_per_directory)

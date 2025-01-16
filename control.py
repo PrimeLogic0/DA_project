@@ -4,8 +4,8 @@ import csv
 from collections import defaultdict
 
 # Percorsi delle directory e del file CSV
-base_dir = "Output_images_10_minmax/"  # Directory con le immagini organizzate in sottodirectory per classe
-csv_path = "predictions.csv"     # CSV generato con le predizioni
+base_dir = "Output_images_npz/"  # Directory con le immagini organizzate in sottodirectory per classe
+csv_path = "predictions_npz.csv"     # CSV generato con le predizioni
 
 # Caricamento del CSV
 def load_predictions_from_csv(csv_path):

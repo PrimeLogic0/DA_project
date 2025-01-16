@@ -64,7 +64,7 @@ def save_images_from_npz_with_labels(npz_path, output_dir, label_map_path):
 
 # Esempio di utilizzo
 #cambiare il percorso del file
-npz_path = "128/iterate/df/synth_models/samples_10x10x10x1.npz"  # Percorso al file .npz
+npz_path = "128/iterate/df/synth_models/samples_2000x10x10x1.npz"  # Percorso al file .npz
 label_map_path = "scripts/128/iterate/df/synth_models/label_map.csv"  # Percorso al file CSV
 output_dir = "model_npz_image"      # Directory di destinazione
 save_images_from_npz_with_labels(npz_path, output_dir, label_map_path)

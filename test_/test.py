@@ -33,7 +33,7 @@ def recover_original_data(npz_file, min_global, max_global):
     return valori_originali
 
 # Esempio di utilizzo
-npz_file = "./test_/sample_2.npz"  # Sostituisci con il percorso corretto
+npz_file = "sample_2.npz"  # Sostituisci con il percorso corretto
 original_data = recover_original_data(npz_file, min_global, max_global)
 
 print("Dati originali recuperati:", original_data)

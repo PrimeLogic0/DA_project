@@ -1,11 +1,14 @@
 import os
 import csv
+import numpy as np
 import tensorflow as tf
-from tensorflow.keras.utils import load_img, img_to_array
+
+# Disabilita l'uso della GPU per risolvere i problemi CUDA
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # Parametri del modello e delle immagini
 model_path = "best_model.keras"  # Path del modello salvato
-image_dir = "testing/"        # Directory con le nuove immagini
+image_dir = "testing/"          # Directory con le nuove immagini
 output_csv = "predictions.csv"  # Nome del file CSV di output
 img_height = 10
 img_width = 10
@@ -14,22 +17,27 @@ img_width = 10
 model = tf.keras.models.load_model(model_path)
 
 # Recupero dei nomi delle classi dal modello addestrato
-# Supponendo che train_dataset.class_names fosse salvato in fase di training
 class_names = sorted(os.listdir("model_generated_image/"))  # Ordina le sottodirectory per ricavare i nomi delle classi
 
 # Funzione per elaborare e classificare le immagini
 def classify_images(image_dir, model, class_names):
     predictions = []
 
-    for img_name in os.listdir(image_dir):
-        img_path = os.path.join(image_dir, img_name)
-        if not os.path.isfile(img_path):
+    for file_name in os.listdir(image_dir):
+        file_path = os.path.join(image_dir, file_name)
+        if not os.path.isfile(file_path) or not file_name.endswith('.npz'):
             continue
 
-        # Caricamento e preprocessing dell'immagine
-        img = load_img(img_path, target_size=(img_height, img_width))
-        img_array = img_to_array(img)
-        img_array = tf.expand_dims(img_array, 0)  # Creazione batch
+        # Caricamento e preprocessing del file .npz
+        data = np.load(file_path)
+        if 'gasf_img.npy' not in data:
+            continue
+
+        img_array = data['gasf_img.npy']  # Caricamento dell'immagine dalla matrice
+        if img_array.shape[:2] != (img_height, img_width):  # Controllo dimensioni immagine
+            continue
+
+        img_array = np.expand_dims(img_array, axis=0)  # Creazione batch (aggiunge dimensione batch)
 
         # Predizione
         preds = model.predict(img_array)
@@ -41,7 +49,7 @@ def classify_images(image_dir, model, class_names):
 
         # Salva il risultato
         predictions.append({
-            "image": img_name,
+            "image": file_name,
             "top_classes": top_classes
         })
 
@@ -68,4 +76,3 @@ predictions = classify_images(image_dir, model, class_names)
 save_predictions_to_csv(predictions, output_csv)
 
 print(f"Predizioni salvate in {output_csv}")
-

@@ -9,3 +9,6 @@ model_npz_image/
 testing/
 training_10/
 128/
+distribuzioni/npz_image_folder/
+npz_image_folder/
+training_pdf/
