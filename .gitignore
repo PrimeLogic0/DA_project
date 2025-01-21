@@ -1,10 +1,11 @@
 myenv/
 .idea/
 scripts/__pycache__/
+scripts/128/
+scripts/png_model/
 test_/
 Output_images_10_minmax/
 Output_images_10/
-Output_images_npz/
 model_npz_image/
 testing/
 training_10/
@@ -12,3 +13,4 @@ training_10/
 distribuzioni/npz_image_folder/
 npz_image_folder/
 training_pdf/
+*.pt
