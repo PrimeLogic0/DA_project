@@ -32,6 +32,7 @@ def evaluate_predictions(base_dir, predictions):
     }
     class_wise_counts = defaultdict(int)
     total_images_per_class = defaultdict(int)
+    confusion_matrix = defaultdict(lambda: defaultdict(int))
 
     for class_name in os.listdir(base_dir):
         class_dir = os.path.join(base_dir, class_name)
@@ -50,6 +51,9 @@ def evaluate_predictions(base_dir, predictions):
                 stats["total_images"] += 1
                 # Verifica se la classe corretta è nelle top 3 predette
                 top_classes = [cls for cls, _ in predictions[img_name]]
+                predicted_class = top_classes[0]
+                confusion_matrix[class_name][predicted_class] += 1
+
                 if class_name == top_classes[0]:
                     stats["first_place"] += 1
                     class_wise_counts[class_name] += 1
@@ -60,10 +64,10 @@ def evaluate_predictions(base_dir, predictions):
                 else:
                     stats["wrong"] += 1
 
-    return stats, class_wise_counts, total_images_per_class
+    return stats, class_wise_counts, total_images_per_class, confusion_matrix
 
 # Funzione per salvare i risultati in un file CSV
-def save_results_to_csv(stats, class_wise_counts, total_images_per_class, output_file):
+def save_results_to_csv(stats, class_wise_counts, total_images_per_class, confusion_matrix, output_file):
     with open(output_file, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Classe", "Immagini corrette come prima classe", "Totale immagini per classe"])
@@ -81,9 +85,21 @@ def save_results_to_csv(stats, class_wise_counts, total_images_per_class, output
         writer.writerow(["Immagini classificate correttamente come terza classe", stats["third_place"]])
         writer.writerow(["Immagini sbagliate", stats["wrong"]])
 
+        # Scriviamo la matrice di confusione
+        writer.writerow([])
+        writer.writerow(["Matrice di confusione"])
+        all_classes = sorted(set(confusion_matrix.keys()).union(*[confusion_matrix[c].keys() for c in confusion_matrix]))
+        writer.writerow(["Classe Reale / Predetta"] + all_classes)
+
+        for real_class in all_classes:
+            row = [real_class]
+            for predicted_class in all_classes:
+                row.append(confusion_matrix[real_class][predicted_class])
+            writer.writerow(row)
+
 # Main
 predictions = load_predictions_from_csv(csv_path)
-stats, class_wise_counts, total_images_per_class = evaluate_predictions(base_dir, predictions)
+stats, class_wise_counts, total_images_per_class, confusion_matrix = evaluate_predictions(base_dir, predictions)
 
 # Output su console
 print("Risultati delle predizioni:")
@@ -98,5 +114,5 @@ for class_name, count in class_wise_counts.items():
     print(f"Classe {class_name}: {count} immagini corrette come prima classe")
 
 # Salva i risultati nel file CSV
-save_results_to_csv(stats, class_wise_counts, total_images_per_class, output_file)
+save_results_to_csv(stats, class_wise_counts, total_images_per_class, confusion_matrix, output_file)
 print(f"\nI risultati sono stati salvati in {output_file}")
